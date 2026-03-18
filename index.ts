@@ -1,7 +1,12 @@
 import { Hono } from 'hono'
+import { jwt, sign } from 'hono/jwt'
+import { bearerAuth } from 'hono/bearer-auth'
 import { SQL } from 'bun'
 
 const app = new Hono()
+
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-key-change-me'
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'admin-secret-token'
 
 // Use Bun's built-in SQL client for MySQL/MariaDB
 // Bun automatically loads .env files, so no need for dotenv
@@ -14,7 +19,16 @@ const sql = new SQL({
   database: process.env.DB_NAME || "bandwidth_db",
 })
 
-app.post('/lookup-bandwidth', async (c) => {
+app.get('/generate-token', bearerAuth({ token: ADMIN_TOKEN }), async (c) => {
+  const payload = {
+    exp: Math.floor(Date.now() / 1000) + 60 * 60, // Token expires in 1 hour
+    role: 'api-client'
+  }
+  const token = await sign(payload, JWT_SECRET)
+  return c.json({ token, expires_in: '1h' })
+})
+
+app.post('/lookup-bandwidth', jwt({ secret: JWT_SECRET, alg: 'HS256' }), async (c) => {
   try {
     const body = await c.req.json();
     const ips = body.ips;
