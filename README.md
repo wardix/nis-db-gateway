@@ -21,19 +21,25 @@ bun install
 
 ## Konfigurasi
 
-Buat file `.env` di direktori akar proyek dan sesuaikan variabel berikut:
+Salin file contoh `.env.example` menjadi `.env` dan sesuaikan variabelnya:
+
+```bash
+cp .env.example .env
+```
+
+Sesuaikan isi file `.env` Anda:
 
 ```env
-# Database
+# Database Configuration
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=your_password
+DB_PASSWORD=your_secure_password
 DB_NAME=bandwidth_db
 
-# Keamanan
-ADMIN_TOKEN=token_admin_anda_di_sini
-JWT_SECRET=rahasia_jwt_anda_di_sini
+# Authentication Security
+ADMIN_TOKEN=your_admin_secret_token_here
+JWT_SECRET=your_long_random_jwt_secret_here
 ```
 
 ## Cara Menjalankan
