@@ -89,7 +89,7 @@ app.post('/lookup-bandwidth', jwt({ secret: JWT_SECRET, alg: 'HS256' }), async (
   }
 })
 
-export default {
-  port: 3000,
+Bun.serve({
+  port: parseInt(process.env.PORT || "3000"),
   fetch: app.fetch,
-}
+})
