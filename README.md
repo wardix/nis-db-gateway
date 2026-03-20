@@ -56,6 +56,12 @@ bun run index.ts
 
 Endpoint ini digunakan untuk mendapatkan JWT yang diperlukan untuk mengakses data.
 
+**Contoh Request**:
+```bash
+curl -X GET http://localhost:3000/generate-token \
+  -H "Authorization: Bearer your_admin_secret_token_here"
+```
+
 **Response**:
 ```json
 {
@@ -67,6 +73,14 @@ Endpoint ini digunakan untuk mendapatkan JWT yang diperlukan untuk mengakses dat
 ### 2. Lookup Bandwidth
 **Endpoint**: `POST /lookup-bandwidth`  
 **Auth**: `Authorization: Bearer <JWT_TOKEN>`
+
+**Contoh Request**:
+```bash
+curl -X POST http://localhost:3000/lookup-bandwidth \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"ips": ["10.20.30.41", "10.20.30.42"]}'
+```
 
 **Request Body**:
 ```json
