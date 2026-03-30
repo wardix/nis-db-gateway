@@ -35,7 +35,7 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=your_secure_password
-DB_NAME=bandwidth_db
+DB_NAME=nis
 
 # Authentication Security
 ADMIN_TOKEN=your_admin_secret_token_here

@@ -16,7 +16,7 @@ const sql = new SQL({
   port: parseInt(process.env.DB_PORT || '3306', 10),
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'bandwidth_db',
+  database: process.env.DB_NAME || 'nis',
 })
 
 app.get('/generate-token', bearerAuth({ token: ADMIN_TOKEN }), async (c) => {
