@@ -51,15 +51,22 @@ bun run index.ts
 ## Dokumentasi API
 
 ### 1. Autentikasi: Mendapatkan JWT Token
-**Endpoint**: `GET /generate-token`  
+**Endpoint**: `POST /auth/token`
 **Auth**: `Authorization: Bearer <ADMIN_TOKEN>`
 
 Endpoint ini digunakan untuk mendapatkan JWT yang diperlukan untuk mengakses data.
 
+**Request Body (JSON)**:
+- `exp` (Optional): Masa berlaku token dalam detik. Jika tidak diisi, token berlaku selamanya.
+- `role` (Optional): Role klien (default: `operator`).
+- `user` (Optional): Identitas pengguna (default: `nis`).
+
 **Contoh Request**:
 ```bash
-curl -X GET http://localhost:3000/generate-token \
-  -H "Authorization: Bearer your_admin_secret_token_here"
+curl -X POST http://localhost:3000/auth/token \
+  -H "Authorization: Bearer your_admin_secret_token_here" \
+  -H "Content-Type: application/json" \
+  -d '{"user": "admin_jaya", "role": "admin", "exp": 3600}'
 ```
 
 **Response**:
@@ -71,12 +78,12 @@ curl -X GET http://localhost:3000/generate-token \
 ```
 
 ### 2. Lookup Bandwidth
-**Endpoint**: `POST /lookup-bandwidth`  
+**Endpoint**: `POST /bandwidth/search`
 **Auth**: `Authorization: Bearer <JWT_TOKEN>`
 
 **Contoh Request**:
 ```bash
-curl -X POST http://localhost:3000/lookup-bandwidth \
+curl -X POST http://localhost:3000/bandwidth/search \
   -H "Authorization: Bearer <JWT_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{"ips": ["10.20.30.41", "10.20.30.42"]}'

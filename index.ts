@@ -19,20 +19,27 @@ const sql = new SQL({
   database: process.env.DB_NAME || 'nis',
 })
 
-app.get('/generate-token', bearerAuth({ token: ADMIN_TOKEN }), async (c) => {
-  const expQuery = c.req.query('exp')
-  const roleQuery = c.req.query('role')
-
-  const payload: { role: string; exp?: number } = {
-    role: roleQuery || 'api-client',
+app.post('/auth/token', bearerAuth({ token: ADMIN_TOKEN }), async (c) => {
+  let body: { role?: string; exp?: number; user?: string } = {}
+  try {
+    // Attempt to parse JSON body, default to empty object if none provided
+    body = await c.req.json()
+  } catch {
+    // Fallback for cases where no body or invalid JSON is sent
+    body = {}
   }
 
-  let expSeconds: number | undefined
-  if (expQuery) {
-    expSeconds = parseInt(expQuery, 10)
-    if (!Number.isNaN(expSeconds)) {
-      payload.exp = Math.floor(Date.now() / 1000) + expSeconds
-    }
+  const role = body.role || 'operator'
+  const user = body.user || 'nis'
+  const expSeconds = body.exp
+
+  const payload: { role: string; user: string; exp?: number } = {
+    role,
+    user,
+  }
+
+  if (expSeconds && !Number.isNaN(Number(expSeconds))) {
+    payload.exp = Math.floor(Date.now() / 1000) + Number(expSeconds)
   }
 
   const token = await sign(payload, JWT_SECRET)
@@ -45,7 +52,7 @@ app.get('/generate-token', bearerAuth({ token: ADMIN_TOKEN }), async (c) => {
 })
 
 app.post(
-  '/lookup-bandwidth',
+  '/bandwidth/search',
   jwt({ secret: JWT_SECRET, alg: 'HS256' }),
   async (c) => {
     try {

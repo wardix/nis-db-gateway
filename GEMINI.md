@@ -19,14 +19,15 @@
   - Prefer `Number.isNaN()` over global `isNaN()`.
 
 ## 📡 API Endpoints & Logic
-### 1. `GET /generate-token`
+### 1. `POST /auth/token`
 - **Auth**: Bearer (Admin)
-- **Parameters**:
-  - `exp` (query): Optional expiration in seconds. Default is permanent (`never`).
-  - `role` (query): Optional role. Default is `api-client`.
+- **Request Body (JSON)**:
+  - `exp` (number): Optional expiration in seconds. Default is permanent (`never`).
+  - `role` (string): Optional role. Default is `operator`.
+  - `user` (string): Optional user identifier. Default is `nis`.
 - **Logic**: Returns a signed JWT for data access.
 
-### 2. `POST /lookup-bandwidth`
+### 2. `POST /bandwidth/search`
 - **Auth**: JWT (Bearer)
 - **Request**: JSON array of IP addresses (`ips`).
 - **Logic**:
