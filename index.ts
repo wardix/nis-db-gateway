@@ -136,6 +136,40 @@ app.post(
   },
 )
 
+app.get(
+  '/customers/lookup',
+  jwt({ secret: JWT_SECRET, alg: 'HS256' }),
+  async (c) => {
+    try {
+      const email = c.req.query('email')
+
+      if (!email) {
+        return c.json({ error: 'email query parameter is required' }, 400)
+      }
+
+      const results = await sql`
+        SELECT
+          CustId as customer_id
+        FROM
+          Customer
+        WHERE
+          (FIND_IN_SET(${email}, CustEmail) > 0) OR
+          (FIND_IN_SET(${email}, CustTechCPEmail) > 0) OR
+          (FIND_IN_SET(${email}, CustBillCPEmail) > 0)
+      `
+
+      if (results.length === 0) {
+        return c.json({ error: 'Customer not found' }, 404)
+      }
+
+      return c.json(results)
+    } catch (error: unknown) {
+      console.error('Database error:', error)
+      return c.json({ error: 'An unexpected error occurred' }, 500)
+    }
+  },
+)
+
 Bun.serve({
   port: parseInt(process.env.PORT || '3000', 10),
   fetch: app.fetch,

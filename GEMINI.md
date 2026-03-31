@@ -35,6 +35,11 @@
   - Batches queries (max 500 IPs/batch) for performance.
   - Performs a complex JOIN across `CustomerServiceTechnical`, `CustomerServices`, and `ServiceShaping`.
 
+### 3. `GET /customers/lookup`
+- **Auth**: JWT (Bearer)
+- **Query Parameter**: `email` (string).
+- **Logic**: Searches for a single customer ID based on their email address from the `Customers` table.
+
 ## 📝 Commit Convention
 Follows **Conventional Commits** (e.g., `feat:`, `fix:`, `chore:`, `docs:`, `style:`).
 
