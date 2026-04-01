@@ -40,6 +40,11 @@
 - **Query Parameter**: `email` (string).
 - **Logic**: Searches for a single customer ID based on their email address from the `Customers` table.
 
+### 4. `GET /subscribers/lookup`
+- **Auth**: JWT (Bearer)
+- **Query Parameter**: `phone` (string).
+- **Logic**: Searches for subscriber details (ID and account name) based on a phone number from the `Subscribers` table.
+
 ## 📝 Commit Convention
 Follows **Conventional Commits** (e.g., `feat:`, `fix:`, `chore:`, `docs:`, `style:`).
 

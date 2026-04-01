@@ -129,6 +129,27 @@ curl -G "http://localhost:3000/customers/lookup" \
 ]
 ```
 
+### 4. Lookup Subscriber (by Phone Number)
+**Endpoint**: `GET /subscribers/lookup`  
+**Auth**: `Authorization: Bearer <JWT_TOKEN>`
+
+**Contoh Request**:
+```bash
+curl -G "http://localhost:3000/subscribers/lookup" \
+  --data-urlencode "phone=08123456789" \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+**Response**:
+```json
+[
+  {
+    "subscriber_id": "SUB-12345",
+    "account_name": "John Doe"
+  }
+]
+```
+
 ## Struktur Database (Tabel Terkait)
 
 API ini melakukan JOIN pada tabel berikut:

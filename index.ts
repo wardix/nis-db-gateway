@@ -170,6 +170,43 @@ app.get(
   },
 )
 
+app.get(
+  '/subscribers/lookup',
+  jwt({ secret: JWT_SECRET, alg: 'HS256' }),
+  async (c) => {
+    try {
+      const phone = c.req.query('phone')
+
+      if (!phone) {
+        return c.json({ error: 'phone query parameter is required' }, 400)
+      }
+
+      const results = await sql`
+        SELECT
+          cs.CustServId AS subscriber_id,
+          cs.CustAccName AS account_name
+        FROM
+          sms_phonebook AS sp
+        LEFT JOIN
+          CustomerServices cs
+        ON sp.CustId = cs.CustId
+        WHERE
+          CONCAT('+', sp.phone) LIKE CONCAT('%+', ${phone})
+          AND NOT (cs.CustStatus IN ('NA'))
+      `
+
+      if (results.length === 0) {
+        return c.json({ error: 'Subscriber not found' }, 404)
+      }
+
+      return c.json(results)
+    } catch (error: unknown) {
+      console.error('Database error:', error)
+      return c.json({ error: 'An unexpected error occurred' }, 500)
+    }
+  },
+)
+
 Bun.serve({
   port: parseInt(process.env.PORT || '3000', 10),
   fetch: app.fetch,
