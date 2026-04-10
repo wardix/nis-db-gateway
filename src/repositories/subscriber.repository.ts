@@ -16,4 +16,23 @@ export const subscriberRepository = {
         AND NOT (cs.CustStatus IN ('NA'))
     `
   },
+
+  async syncGraphs(data: { subscriber_id: string; graph_id: string }[], updatedBy: string) {
+    // Perform batch insert with IGNORE into the real table CustomerServicesZabbixGraph
+    // Unique key (CustServId, GraphId) ensures we skip existing pairs
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    
+    const values = data.map((item) => [
+      item.subscriber_id,
+      item.graph_id,
+      1,      // OrderNo default to 1
+      now,    // UpdatedTime
+      updatedBy // UpdatedBy from JWT user
+    ])
+
+    return await sql`
+      INSERT IGNORE INTO CustomerServicesZabbixGraph (CustServId, GraphId, OrderNo, UpdatedTime, UpdatedBy)
+      VALUES ${sql(values)}
+    `
+  },
 }

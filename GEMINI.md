@@ -46,6 +46,11 @@
 - **Query Parameter**: `phone` (string).
 - **Logic**: Searches for subscriber details (ID and account name) based on a phone number by performing a flexible prefix match (`LIKE '%+...'`) and joining `sms_phonebook` with `CustomerServices`, filtering out 'NA' statuses. Returns an array of matching records.
 
+### 5. `POST /subscribers/graph/sync`
+- **Auth**: JWT (Bearer)
+- **Request Body (JSON)**: Array of objects (`data`) containing `subscriber_id` and `graph_id`.
+- **Logic**: Performs a batch `INSERT IGNORE` into the `CustomerServicesZabbixGraph` table. Skips duplicates based on the `UNIQUE KEY (CustServId, GraphId)`. Automatically populates `OrderNo`, `UpdatedTime`, and `UpdatedBy` (from JWT user).
+
 ## 📝 Commit Convention
 Follows **Conventional Commits** (e.g., `feat:`, `fix:`, `chore:`, `docs:`, `style:`).
 
