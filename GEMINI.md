@@ -4,6 +4,7 @@
 - **Runtime**: [Bun](https://bun.sh) (v1.1+)
 - **Framework**: [Hono](https://hono.dev)
 - **Database**: MySQL/MariaDB (via Bun's native `SQL` client)
+- **Design Pattern**: **3-Tier Layered Architecture** (Routes -> Services -> Repositories). All new logic must follow this separation of concerns inside the `src/` directory.
 - **Authentication**:
   - **Admin Layer**: `bearerAuth` middleware using `ADMIN_TOKEN`.
   - **Data Layer**: `jwt` middleware using `JWT_SECRET` (HS256).
@@ -38,12 +39,12 @@
 ### 3. `GET /customers/lookup`
 - **Auth**: JWT (Bearer)
 - **Query Parameter**: `email` (string).
-- **Logic**: Searches for a single customer ID based on their email address from the `Customers` table.
+- **Logic**: Searches for customer IDs based on their email address using `FIND_IN_SET` across multiple email columns (`CustEmail`, `CustTechCPEmail`, `CustBillCPEmail`). Returns an array of matching records.
 
 ### 4. `GET /subscribers/lookup`
 - **Auth**: JWT (Bearer)
 - **Query Parameter**: `phone` (string).
-- **Logic**: Searches for subscriber details (ID and account name) based on a phone number from the `Subscribers` table.
+- **Logic**: Searches for subscriber details (ID and account name) based on a phone number by performing a flexible prefix match (`LIKE '%+...'`) and joining `sms_phonebook` with `CustomerServices`, filtering out 'NA' statuses. Returns an array of matching records.
 
 ## 📝 Commit Convention
 Follows **Conventional Commits** (e.g., `feat:`, `fix:`, `chore:`, `docs:`, `style:`).
