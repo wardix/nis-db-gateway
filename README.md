@@ -1,10 +1,13 @@
-# Bandwidth Lookup API
+# NIS Database Gateway API
 
-API performa tinggi yang dibangun dengan [Bun](https://bun.sh), [Hono](https://hono.dev), dan MariaDB untuk melakukan lookup profil bandwidth pelanggan berdasarkan alamat IP (CIDR /32).
+API performa tinggi yang dibangun dengan [Bun](https://bun.sh), [Hono](https://hono.dev), dan MariaDB untuk menyediakan integrasi dan akses data pelanggan yang aman (termasuk profil bandwidth, informasi customer, dan subscriber) dari database utama.
 
 ## Fitur Utama
 
-- **Lookup Batch**: Mendukung pengecekan banyak IP sekaligus (hingga 500 per batch).
+- **Arsitektur Berlapis (3-Tier)**: Struktur kode modular yang memisahkan Route, Service, dan Repository.
+- **Bandwidth Lookup**: Mendukung pengecekan banyak IP sekaligus (hingga 500 per batch).
+- **Customer Lookup**: Pencarian Customer ID berdasarkan alamat email.
+- **Subscriber Lookup**: Pencarian ID subscriber dan nama akun berdasarkan nomor telepon secara fleksibel.
 - **Dual-Layer Auth**: Proteksi Admin (Bearer Token) untuk generate JWT, dan proteksi JWT untuk akses data.
 - **SQL Performa Tinggi**: Menggunakan driver SQL bawaan Bun yang sangat cepat.
 - **Transformasi Data Otomatis**: Konversi otomatis dari IP murni ke format CIDR `/32` untuk pencocokan database.
@@ -45,8 +48,9 @@ JWT_SECRET=your_long_random_jwt_secret_here
 ## Cara Menjalankan
 
 ```bash
-bun run index.ts
+bun run src/index.ts
 ```
+*(Catatan: Entry point sekarang berada di `src/index.ts` setelah refactoring ke Arsitektur Berlapis).*
 
 ## Dokumentasi API
 
