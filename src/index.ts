@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
-import auth from './src/routes/auth.route'
-import bandwidth from './src/routes/bandwidth.route'
-import customers from './src/routes/customer.route'
-import subscribers from './src/routes/subscriber.route'
+import auth from './routes/auth.route'
+import bandwidth from './routes/bandwidth.route'
+import customers from './routes/customer.route'
+import subscribers from './routes/subscriber.route'
 
 const app = new Hono()
 
