@@ -30,4 +30,31 @@ subscribers.get(
   },
 )
 
+subscribers.post(
+  '/graph/sync',
+  jwt({ secret: JWT_SECRET, alg: 'HS256' }),
+  async (c) => {
+    try {
+      const body = await c.req.json()
+      const data = body.data
+      const payload = c.get('jwtPayload')
+      const updatedBy = payload.user || 'api'
+
+      if (!Array.isArray(data) || data.length === 0) {
+        return c.json(
+          { error: 'data must be a non-empty array of objects' },
+          400,
+        )
+      }
+
+      await subscriberService.syncGraphs(data, updatedBy)
+
+      return c.json({ message: 'Sync successful', processed: data.length })
+    } catch (error: unknown) {
+      console.error('Database error:', error)
+      return c.json({ error: 'An unexpected error occurred' }, 500)
+    }
+  },
+)
+
 export default subscribers

@@ -8,6 +8,7 @@ API performa tinggi yang dibangun dengan [Bun](https://bun.sh), [Hono](https://h
 - **Bandwidth Lookup**: Mendukung pengecekan banyak IP sekaligus (hingga 500 per batch).
 - **Customer Lookup**: Pencarian Customer ID berdasarkan alamat email.
 - **Subscriber Lookup**: Pencarian ID subscriber dan nama akun berdasarkan nomor telepon secara fleksibel.
+- **Subscriber Graph Sync**: Sinkronisasi data graph ID secara massal ke tabel `CustomerServicesZabbixGraph` dengan pencatatan otomatis user pembuat (`UpdatedBy`).
 - **Dual-Layer Auth**: Proteksi Admin (Bearer Token) untuk generate JWT, dan proteksi JWT untuk akses data.
 - **SQL Performa Tinggi**: Menggunakan driver SQL bawaan Bun yang sangat cepat.
 - **Transformasi Data Otomatis**: Konversi otomatis dari IP murni ke format CIDR `/32` untuk pencocokan database.
@@ -154,9 +155,37 @@ curl -G "http://localhost:3000/subscribers/lookup" \
 ]
 ```
 
+### 5. Subscriber Graph Sync
+**Endpoint**: `POST /subscribers/graph/sync`  
+**Auth**: `Authorization: Bearer <JWT_TOKEN>`
+
+**Contoh Request**:
+```bash
+curl -X POST http://localhost:3000/subscribers/graph/sync \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      { "subscriber_id": "123", "graph_id": "abc" },
+      { "subscriber_id": "456", "graph_id": "def" }
+    ]
+  }'
+```
+
+**Response**:
+```json
+{
+  "message": "Sync successful",
+  "processed": 2
+}
+```
+
 ## Struktur Database (Tabel Terkait)
 
-API ini melakukan JOIN pada tabel berikut:
+API ini melakukan JOIN atau interaksi pada tabel berikut:
 - `CustomerServiceTechnical` (Kolom: `Network`, `CustServId`)
-- `CustomerServices` (Kolom: `CustServId`, `ServiceId`)
+- `CustomerServices` (Kolom: `CustServId`, `ServiceId`, `CustAccName`, `CustStatus`)
 - `ServiceShaping` (Kolom: `ServiceId`, `NormalDownCeil`, `NormalUpCeil`)
+- `sms_phonebook` (Kolom: `phone`, `CustId`)
+- `CustomerServicesZabbixGraph` (Kolom: `CustServId`, `GraphId`, `UpdatedBy`, `UpdatedTime`)
+- `Customer` (Kolom: `CustEmail`, `CustTechCPEmail`, `CustBillCPEmail`)
