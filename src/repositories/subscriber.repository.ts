@@ -22,17 +22,17 @@ export const subscriberRepository = {
     // Unique key (CustServId, GraphId) ensures we skip existing pairs
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ')
     
-    const values = data.map((item) => [
-      item.subscriber_id,
-      item.graph_id,
-      1,      // OrderNo default to 1
-      now,    // UpdatedTime
-      updatedBy // UpdatedBy from JWT user
-    ])
+    const subscriberGraphData = data.map((item) => ({
+      CustServId: item.subscriber_id,
+      GraphId: item.graph_id,
+      OrderNo: 1,      // OrderNo default to 1
+      UpdatedTime: now,// UpdatedTime
+      updatedBy        // UpdatedBy from JWT user
+    }))
 
     return await sql`
-      INSERT IGNORE INTO CustomerServicesZabbixGraph (CustServId, GraphId, OrderNo, UpdatedTime, UpdatedBy)
-      VALUES ${sql(values)}
+      INSERT IGNORE INTO CustomerServicesZabbixGraph
+      ${sql(subscriberGraphData)}
     `
   },
 }
