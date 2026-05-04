@@ -9,6 +9,7 @@ API performa tinggi yang dibangun dengan [Bun](https://bun.sh), [Hono](https://h
 - **Customer Lookup**: Pencarian Customer ID berdasarkan alamat email.
 - **Subscriber Lookup**: Pencarian ID subscriber dan nama akun berdasarkan nomor telepon secara fleksibel.
 - **Subscriber Graph Sync**: Sinkronisasi data graph ID secara massal ke tabel `CustomerServicesZabbixGraph` dengan pencatatan otomatis user pembuat (`UpdatedBy`).
+- **Vendor API Sync (FTTX)**: Menyediakan data sirkuit pelanggan FTTX untuk sinkronisasi eksternal sesuai kontrak (paginated).
 - **Dual-Layer Auth**: Proteksi Admin (Bearer Token) untuk generate JWT, dan proteksi JWT untuk akses data.
 - **SQL Performa Tinggi**: Menggunakan driver SQL bawaan Bun yang sangat cepat.
 - **Transformasi Data Otomatis**: Konversi otomatis dari IP murni ke format CIDR `/32` untuk pencocokan database.
@@ -180,6 +181,41 @@ curl -X POST http://localhost:3000/subscribers/graph/sync \
 }
 ```
 
+### 6. Vendor API: FTTX Circuit Sync
+**Endpoint**: `GET /subscribers/fttx/circuits`  
+**Auth**: `Authorization: Bearer <JWT_TOKEN>`
+
+Endpoint ini menyediakan data sirkuit pelanggan FTTX untuk kebutuhan sinkronisasi vendor eksternal.
+
+**Query Parameters**:
+- `page` (Optional, default: `1`): Nomor halaman.
+- `page_size` (Optional, default: `100`): Jumlah data per halaman.
+- `operator_id` (Optional): ID Vendor/Operator (memfilter berdasarkan `fv.id`).
+
+**Contoh Request**:
+```bash
+curl -G "http://localhost:3000/subscribers/fttx/circuits" \
+  --data-urlencode "operator_id=1" \
+  --data-urlencode "page=1" \
+  --data-urlencode "page_size=2" \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+**Response**:
+```json
+{
+  "results": [
+    {
+      "subscriber_id": "12345",
+      "subscriber_name": "John Doe",
+      "circuit_id": "CID-998877"
+    }
+  ],
+  "next_page": 2,
+  "total_pages": 10
+}
+```
+
 ## Struktur Database (Tabel Terkait)
 
 API ini melakukan JOIN atau interaksi pada tabel berikut:
@@ -189,3 +225,7 @@ API ini melakukan JOIN atau interaksi pada tabel berikut:
 - `sms_phonebook` (Kolom: `phone`, `CustId`)
 - `CustomerServicesZabbixGraph` (Kolom: `CustServId`, `GraphId`, `UpdatedBy`, `UpdatedTime`)
 - `Customer` (Kolom: `CustEmail`, `CustTechCPEmail`, `CustBillCPEmail`)
+- `CustomerServiceTechnicalCustom` (Kolom: `technicalTypeId`, `technicalType`, `attribute`, `value`)
+- `CustomerServiceTechnicalLink` (Kolom: `id`, `CustServId`, `foVendorId`)
+- `noc_fiber` (Kolom: `id`, `vendorId`)
+- `fiber_vendor` (Kolom: `id`)
