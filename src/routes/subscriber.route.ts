@@ -57,4 +57,35 @@ subscribers.post(
   },
 )
 
+subscribers.get(
+  '/fttx/circuits',
+  jwt({ secret: JWT_SECRET, alg: 'HS256' }),
+  async (c) => {
+    try {
+      const page = parseInt(c.req.query('page') || '1', 10)
+      const pageSize = parseInt(c.req.query('page_size') || '100', 10)
+      const operatorId = c.req.query('operator_id')
+
+      if (Number.isNaN(page) || page < 1) {
+        return c.json({ error: 'page must be a positive integer' }, 400)
+      }
+
+      if (Number.isNaN(pageSize) || pageSize < 1) {
+        return c.json({ error: 'page_size must be a positive integer' }, 400)
+      }
+
+      const response = await subscriberService.getPaginatedFttxCircuits(
+        page,
+        pageSize,
+        operatorId,
+      )
+
+      return c.json(response)
+    } catch (error: unknown) {
+      console.error('Database error:', error)
+      return c.json({ error: 'An unexpected error occurred' }, 500)
+    }
+  },
+)
+
 export default subscribers
