@@ -51,6 +51,11 @@
 - **Request Body (JSON)**: Array of objects (`data`) containing `subscriber_id` and `graph_id`.
 - **Logic**: Performs a batch `INSERT IGNORE` into the `CustomerServicesZabbixGraph` table. Skips duplicates based on the `UNIQUE KEY (CustServId, GraphId)`. Automatically populates `OrderNo`, `UpdatedTime`, and `UpdatedBy` (from JWT user).
 
+### 6. `GET /subscribers/fttx/circuits`
+- **Auth**: JWT (Bearer)
+- **Query Parameters**: `page`, `page_size`, `operator_id`.
+- **Logic**: Provides paginated subscriber data (ID, name, and circuit ID) specifically for FTTX customers. Joins multiple tables including `CustomerServiceTechnicalCustom` and `CustomerServiceTechnicalLink`. Filters by `operator_id` (maps to `fv.id`).
+
 ## 📝 Commit Convention
 Follows **Conventional Commits** (e.g., `feat:`, `fix:`, `chore:`, `docs:`, `style:`).
 

@@ -9,7 +9,7 @@ API performa tinggi yang dibangun dengan [Bun](https://bun.sh), [Hono](https://h
 - **Customer Lookup**: Pencarian Customer ID berdasarkan alamat email.
 - **Subscriber Lookup**: Pencarian ID subscriber dan nama akun berdasarkan nomor telepon secara fleksibel.
 - **Subscriber Graph Sync**: Sinkronisasi data graph ID secara massal ke tabel `CustomerServicesZabbixGraph` dengan pencatatan otomatis user pembuat (`UpdatedBy`).
-- **Vendor API Sync (FTTX)**: Menyediakan data sirkuit pelanggan FTTX untuk sinkronisasi eksternal sesuai kontrak (paginated).
+- **Vendor API Sync (FTTX)**: Menyediakan data sirkuit pelanggan FTTX untuk sinkronisasi eksternal (paginated).
 - **Dual-Layer Auth**: Proteksi Admin (Bearer Token) untuk generate JWT, dan proteksi JWT untuk akses data.
 - **SQL Performa Tinggi**: Menggunakan driver SQL bawaan Bun yang sangat cepat.
 - **Transformasi Data Otomatis**: Konversi otomatis dari IP murni ke format CIDR `/32` untuk pencocokan database.
